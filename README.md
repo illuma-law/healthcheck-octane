@@ -4,15 +4,15 @@
 [![Packagist License](https://img.shields.io/badge/Licence-MIT-blue)](http://choosealicense.com/licenses/mit/)
 [![Latest Stable Version](https://img.shields.io/packagist/v/illuma-law/healthcheck-octane?label=Version)](https://packagist.org/packages/illuma-law/healthcheck-octane)
 
-A focused octane extension health check for Spatie's [Laravel Health](https://spatie.be/docs/laravel-health/v1/introduction) package.
+A focused octane server health check for Spatie's [Laravel Health](https://spatie.be/docs/laravel-health/v1/introduction) package.
 
-This package provides a simple, direct health check to verify that the `vector` extension (octane) is properly installed and active in your PostgreSQL database. This is critical for applications that rely on octane for storing AI embeddings and running semantic/similarity searches.
+This package provides a simple, direct health check to verify that your Laravel Octane server (RoadRunner, Swoole, or FrankenPHP) is currently running and responsive.
 
 ## Features
 
-- **Version Detection:** Checks if the `vector` extension is enabled and reports the specific octane version installed.
-- **Configurable Strictness:** Choose whether a missing octane extension should return a Warning (degraded) or a Failure (broken) status for your application.
-- **Query Safety:** Safely handles database connection errors or missing tables, returning a failed state with the exception message instead of crashing the health check suite.
+- **Server Status Check:** Uses the `octane:status` command to verify if the configured Octane server is active.
+- **Environment Awareness:** Can be configured to automatically skip the check in local or testing environments where Octane might not be running.
+- **Detailed Meta:** Captures the server type and status output for easier monitoring and debugging.
 
 ## Installation
 
@@ -22,24 +22,6 @@ Require this package with composer:
 composer require illuma-law/healthcheck-octane
 ```
 
-## Configuration
-
-You can publish the config file with:
-
-```shell
-php artisan vendor:publish --tag="healthcheck-octane-config"
-```
-
-The `healthcheck-octane.php` config file allows you to define whether the check is strictly required by default. 
-
-```php
-return [
-    // If true, the check will FAIL when the extension is missing.
-    // If false, it will generate a WARNING instead.
-    'required' => false,
-];
-```
-
 ## Usage & Integration
 
 Register the check inside your application's health service provider (e.g. `AppServiceProvider` or a dedicated `HealthServiceProvider`), alongside your other Spatie Laravel Health checks:
@@ -47,25 +29,11 @@ Register the check inside your application's health service provider (e.g. `AppS
 ### Basic Registration
 
 ```php
-use IllumaLaw\HealthCheckOctane\OctaneExtensionCheck;
+use IllumaLaw\HealthCheckOctane\OctaneServerCheck;
 use Spatie\Health\Facades\Health;
 
 Health::checks([
-    OctaneExtensionCheck::new(),
-]);
-```
-
-### Fluent Configuration
-
-You can override the config file's default strictness on a per-check basis using the fluent `required()` method. 
-
-```php
-use IllumaLaw\HealthCheckOctane\OctaneExtensionCheck;
-use Spatie\Health\Facades\Health;
-
-Health::checks([
-    // Make the health check FAIL immediately if octane is missing
-    OctaneExtensionCheck::new()->required(true),
+    OctaneServerCheck::new(),
 ]);
 ```
 
@@ -73,10 +41,9 @@ Health::checks([
 
 The check interacts with the Spatie Health dashboard and JSON endpoints using these states:
 
-- **Ok:** The octane extension is installed. The short summary and meta data will include the exact installed version (e.g. `0.7.0`).
-- **Warning:** octane is missing, but `required` is set to `false`.
-- **Failed:** octane is missing and `required` is set to `true`.
-- **Failed (Exception):** The database query to `pg_extension` throws an exception (e.g., database connection down).
+- **Ok:** The Octane server is running successfully.
+- **Skipped:** The check is not running in a production-like environment (if configured).
+- **Failed:** The Octane server is stopped or unreachable.
 
 ## Testing
 

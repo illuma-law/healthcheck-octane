@@ -1,12 +1,11 @@
 {
     "name": "illuma-law/healthcheck-octane",
-    "description": "Focused octane extension health check for Spatie's Laravel Health package.",
+    "description": "Focused octane server health check for Spatie's Laravel Health package.",
     "keywords": [
         "illuma-law",
         "laravel",
         "health",
-        "octane",
-        "postgres"
+        "octane"
     ],
     "homepage": "https://github.com/illuma-law/healthcheck-octane",
     "license": "MIT",
