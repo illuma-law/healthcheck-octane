@@ -25,8 +25,8 @@ final class OctaneServerCheck extends Check
         $output = trim(Artisan::output());
 
         $meta = [
-            'server'         => $server,
-            'exit_code'      => $exitCode,
+            'server' => $server,
+            'exit_code' => $exitCode,
             'output_excerpt' => mb_substr($output, 0, 600),
         ];
 
