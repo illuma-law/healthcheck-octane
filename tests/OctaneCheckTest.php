@@ -24,7 +24,6 @@ it('skips in local/testing when octane server is stopped', function () {
     $mock->shouldReceive('output')->once()->andReturn("Octane server is not running.\n");
     $this->app->instance(Kernel::class, $mock);
 
-    // Default environment is 'testing' in Testbench
     $result = OctaneServerCheck::new()->run();
 
     expect($result->status)->toEqual(Status::skipped())
