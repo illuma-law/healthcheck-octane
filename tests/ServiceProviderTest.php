@@ -6,7 +6,7 @@ use Illuminate\Support\Facades\File;
 
 it('publishes the config file under the correct tag', function () {
     $this->artisan('vendor:publish', [
-        '--tag'   => 'healthcheck-octane-config',
+        '--tag' => 'healthcheck-octane-config',
         '--force' => true,
     ])->assertExitCode(0);
 
